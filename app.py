@@ -14,21 +14,42 @@ app=Flask(__name__)
 def index():
     conn=db_conn()
     cur = conn.cursor()
+    
+    # Get a list of incomplete tasks 
     cur.execute(''' SELECT * FROM todo_list 
-                 ORDER BY is_done ASC, created_at DESC
+                 WHERE is_done = FALSE 
+                 ORDER BY created_at DESC
                 ''')
-    rows= cur.fetchall()
+    active_rows= cur.fetchall()
+
+    #Get a list of completed tasks
+    cur.execute('''
+        SELECT * FROM todo_list
+        WHERE is_done = TRUE
+        ORDER BY created_at DESC
+        ''')
+    completed_row= cur.fetchall()
+
     cur.close()
     conn.close()
 
-    #Grouping them by date 
-    grouped ={}
-    for row in rows:
+    #Grouping active tasks by date 
+    grouped_active ={}#Create a dictionary
+    for row in active_rows:
         date_key = row[3].date()
-        grouped.setdefault(date_key, []).append(row)
-    grouped_list = sorted(grouped.items(), key=lambda x: x[0], reverse=True)
+        grouped_active.setdefault(date_key, []).append(row)
 
-    return render_template('index.html',grouped=grouped_list)
+    grouped_active = sorted(grouped_active.items(), key=lambda x: x[0], reverse=True)
+
+    #Grouping completed tasks by date
+    grouped_done= {}
+    for row in completed_row:
+        date_key= row[3].date()
+        grouped_done.setdefault(date_key,[]).append(row)
+
+    grouped_done = sorted(grouped_done.items(), key=lambda x: x[0], reverse=True)
+
+    return render_template('index.html',grouped_active=grouped_active , grouped_done=grouped_done)
 
 @app.route('/create',methods=['POST','GET'])
 def create():
