@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/styles.css">
+    <title>Flask Todo App </title>
+</head>
+<body>
+    <nav>
+        <H1>My Todo list</H1>
+    </nav>
+
+    <div class="section">
+        <h1> Your Todo List</h1>
+        <table>
+            <thead>
+                <tr>
+                 <th>Title</th>
+                <th>Description</th>
+                <th>Created At</th>
+                <th>Duration (Hours)</th>
+                <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for date, tasks in grouped %}
+                <tr>
+                <td colspan="5" style="background-color:#181be1; font-weight:bold;">
+                    {{ date }}
+                </td>
+                </tr>
+
+                {% for row in tasks %}
+                {# row: (id, title, description, created_at, duration, is_done) #}
+                <tr class="{% if row[5] %}done{% endif %}">
+                    <td class="title">{{ row[1] }}</td>
+                    <td class="description">{{ row[2] }}</td>
+                    <td>{{ row[3] }}</td>
+                    <td>{{ row[4] }}</td>
+                    <td>
+                    <form action="/delete" method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="{{ row[0] }}">
+                        <input type="submit" class="delete_btn" value="Delete">
+                    </form>
+
+                    <form action="/toggle_done" method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="{{ row[0] }}">
+                        <input type="submit" value="{% if not row[5] %}Done{% else %}Undo{% endif %}" class="done_btn">
+                    </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+
+    <div class="section">
+        <h1>Add to your todo list</h1>
+        <form action="/create" method="post">
+            <label >Action</label><br>
+            <input type="text"name="todo_action" placeholder="What you want to do " required><br>
+            
+            <label>Description</label><br>
+            <input type="text" name="todo_description" placeholder="Describe what you want to do" required><br>
+            
+            <label>Duration (Hours)</label><br> <input type="number" name="todo_duration" min="1" required> <br><br>
+            
+            <input type="submit"  class="create_btn"  value="Create">
+        </form>
+    </div>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  document.querySelectorAll(".done_btn").forEach(function(button) {
+    button.addEventListener("click", function(event) {
+      event.preventDefault();
+      let row = event.target.closest("tr");
+      row.classList.toggle("done");
+    });
+  });
+});
+</script>
+
+</body>
+</html>
