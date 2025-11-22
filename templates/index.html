@@ -24,7 +24,7 @@
                 </tr>
             </thead>
             <tbody>
-            {% for date, tasks in grouped %}
+            {% for date, tasks in grouped_active %}
                 <tr>
                 <td colspan="5" style="background-color:#181be1; font-weight:bold;">
                     {{ date }}
@@ -53,9 +53,52 @@
                 {% endfor %}
             {% endfor %}
             </tbody>
-
         </table>
     </div>
+    <div class="section">
+    <h1>Completed Tasks</h1>
+
+    {% if grouped_done %}
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Completed On</th>
+                <th>Duration</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for date, tasks in grouped_done %}
+            <tr>
+                <td colspan="5" style="background-color:#006b1b; font-weight:bold;">
+                    {{ date }}
+                </td>
+            </tr>
+
+            {% for row in tasks %}
+            <tr class="done">
+                <td>{{ row[1] }}</td>
+                <td>{{ row[2] }}</td>
+                <td>{{ row[3] }}</td>
+                <td>{{ row[4] }}</td>
+                <td>
+                    <form action="/toggle_done" method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="{{ row[0] }}">
+                        <input type="submit" value="Undo" class="done_btn">
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p style="text-align:center; color:#aaa;">No completed tasks yet ✅</p>
+    {% endif %}
+ </div>
 
     <div class="section">
         <h1>Add to your todo list</h1>
