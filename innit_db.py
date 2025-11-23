@@ -50,9 +50,9 @@ def create_table():
         CREATE TABLE IF NOT EXISTS Todo_list
         (ID serial Primary Key,title Varchar(50), 
          description varchar(200),
-         created_at TIMESTAMP DEFUALT NOW(), 
+         created_at TIMESTAMP DEFAULT NOW(), 
          duration FLOAT,
-         is_done BOOLEAN DEFUALT FALSE)
+         is_done BOOLEAN DEFAULT FALSE)
         ''')
         print("✅ table created")
     except Exception as e:
