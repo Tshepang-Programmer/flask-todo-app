@@ -1,8 +1,6 @@
 from flask import Flask, render_template, request, redirect , url_for
 from datetime import datetime
 import psycopg2 
-import threading
-import webview
 
 def db_conn():
     conn = psycopg2.connect(database='Flask_Todo',host ='localhost',user='Tshepang',password ='Testingtesting',port='5432')
@@ -59,7 +57,7 @@ def create():
         title =request.form['todo_action']
         description = request.form['todo_description']
         duration =request.form['todo_duration']
-        created_at = datetime.utcnow().date()
+        created_at = datetime.utcnow()
         cur.execute('''
         INSERT INTO todo_list (title,description,created_at,duration)
         VALUES(%s,%s,%s,%s)
@@ -113,16 +111,36 @@ def toggle_done():
             conn.close()
     
     return redirect(url_for('index'))
+@app.route('/toggle_done', methods=['POST'])
+def toggle_done():
+    # Only allow POST for toggling
+    id_raw = request.form.get('id')
+    try:
+        id = int(id_raw)
+    except (TypeError, ValueError):
+        print(f"❌ toggle_done got invalid id: {id_raw}")
+        return redirect(url_for('index'))
 
+    print(f'✅ Toggling done state for id: {id}')
 
-def run_flask():
-    app.run(host='127.0.0.1', port=5000, debug=False)
+    conn = db_conn()
+    cur = conn.cursor()
+    try:
+        cur.execute('''
+            UPDATE todo_list
+            SET is_done = NOT is_done
+            WHERE id = %s
+        ''', (id,))
+        conn.commit()
+        print(f'✅ Rows updated: {cur.rowcount}')
+    except Exception as e:
+        print(f"❌ unable to toggle as done/undone: {e}")
+    finally:
+        cur.close()
+        conn.close()
+
+    return redirect(url_for('index'))
 
 if __name__== '__main__':
-    t = threading.Thread(target=run_flask)
-    t.daemon = True
-    t.start()
-
-   # Open PyWebView window
-    webview.create_window('Flask Todo App', 'http://127.0.0.1:5000', width=1000, height=700)
-    webview.start()
+    app.run(host='127.0.0.1', port=5000, debug=True)
+  

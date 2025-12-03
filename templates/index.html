@@ -114,17 +114,5 @@
             <input type="submit"  class="create_btn"  value="Create">
         </form>
     </div>
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-  document.querySelectorAll(".done_btn").forEach(function(button) {
-    button.addEventListener("click", function(event) {
-      event.preventDefault();
-      let row = event.target.closest("tr");
-      row.classList.toggle("done");
-    });
-  });
-});
-</script>
-
 </body>
 </html>
