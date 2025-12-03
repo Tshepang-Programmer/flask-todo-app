@@ -87,30 +87,6 @@ def delete():
 
         return redirect(url_for('index'))
 
-@app.route('/toggle_done',methods =['POST','GET'])
-def toggle_done():
-    if request.method == 'POST':
-        id = request.form['id']
-        print(f'✅Record with id:{id} has been marked as done/undone')
-
-        conn = db_conn()
-        cur=conn.cursor()
-        try:
-            #The line SET is_done = Not is_done flips the value each time you click it 
-            cur.execute('''
-                        UPDATE todo_list 
-                        SET is_done = NOT is_done 
-                        WHERE id =%s;
-                        ''',(id,))
-            conn.commit()
-            print(f'✅ Record is marked as done or undone')
-        except Exception as e:
-            print(f"❌ unable to toggle as done/undone:{e}")
-        finally:
-            cur.close()
-            conn.close()
-    
-    return redirect(url_for('index'))
 @app.route('/toggle_done', methods=['POST'])
 def toggle_done():
     # Only allow POST for toggling
