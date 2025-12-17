@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect , url_for
-from datetime import datetime
+from datetime import datetime,timezone
 import psycopg2 
 
 def db_conn():
@@ -57,7 +57,7 @@ def create():
         title =request.form['todo_action']
         description = request.form['todo_description']
         duration =request.form['todo_duration']
-        created_at = datetime.now(datetime.timezone.utc)
+        created_at = datetime.now(timezone.utc)
         cur.execute('''
         INSERT INTO todo_list (title,description,created_at,duration)
         VALUES(%s,%s,%s,%s)
