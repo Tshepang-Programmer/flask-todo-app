@@ -1,10 +1,19 @@
+import os
+from dotenv import load_dotenv
 from flask import Flask, render_template, request, redirect , url_for
 from datetime import datetime,timezone
 import psycopg2 
 
+load_dotenv()
+
 def db_conn():
-    conn = psycopg2.connect(database='Flask_Todo',host ='localhost',user='Tshepang',password ='Testingtesting',port='5432')
-    return conn
+    return psycopg2.connect(
+        database = os.getenv("DB_NAME"),
+        host = os.getenv("DB_HOST"),
+        user = os.getenv("DB_USER"),
+        password = os.getenv("DB_PASSWORD"),
+        port =os.getenv("DB_PORT")
+    )
 
 app=Flask(__name__)
 

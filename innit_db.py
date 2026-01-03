@@ -1,15 +1,19 @@
+import os
+from dotenv import load_dotenv
 import psycopg2
 from psycopg2 import sql
+
+load_dotenv()
 
 def Create_DB():
     try:
         # Connect to default database
         conn = psycopg2.connect(
             database='postgres',  # must connect to existing DB
-            host='localhost',
-            user='Tshepang',
-            password='Testingtesting',
-            port='5432'
+            host= os.getenv('DB_HOST'),
+            user= os.getenv('DB_USER'),
+            password= os.getenv('DB_PASSWORD'),
+            port= os.getenv('DB_PORT')
         )
         conn.autocommit = True  # required for CREATE DATABASE
         cur = conn.cursor()
