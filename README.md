@@ -44,3 +44,14 @@ python innit_db.py
 
 ###6. Run the app
 python app.py
+
+## 📸 Screenshots
+
+### Main Todo List
+![Main Todo List](screenshots/main.png)
+
+### Completed Tasks
+![Completed Tasks](screenshots/completed.png)
+
+### Edit Task
+![Edit Task](screenshots/edit.png)
